@@ -7,7 +7,8 @@ const turnRandom = ()=>{
 }
 
 const isTurn = x => x ? 'x' : 'o';
-const isTurnCell = x => x ? 'cross' : 'circle';
+
+const classCells = x => x ? 'cross' : 'circle';
 
 const $ = ( nodo, isAll, doc = document.body ) => isAll 
 ? doc.querySelectorAll(nodo)
@@ -17,6 +18,6 @@ const $ = ( nodo, isAll, doc = document.body ) => isAll
 export {
     turnRandom,
     isTurn,
-    isTurnCell,
+    classCells,
     $
 }

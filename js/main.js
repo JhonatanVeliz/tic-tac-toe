@@ -1,14 +1,17 @@
-import { $, turnRandom, isTurn, isTurnCell } from "./help.js";
+import { $, turnRandom, isTurn, classCells } from "./help.js";
 
 // DOM ELEMENTS
 const cellsContainer = $('.cells-container');
 const messageContainer = $('.message');
+const messageWinner = $('.winner');
 
 // Utilitis
-const turns = { turnTitle : $('.turn'), firstTurn : turnRandom() }
-let isTurnX = turns.firstTurn;
+const turns = { turnTitle: $('.turn'), firstTurn: turnRandom() }
+let turnTitle = $('.turn-title');
+let isTurnX;
 const maxTurs = 9;
 let counterTurns = 0;
+let endGame;
 
 let winningPosition = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -18,36 +21,37 @@ let winningPosition = [
 
 const loadGame = () => {
 
+    isTurnX = turnRandom();
+    endGame = false;
+
     cellsContainer.innerHTML = '';
-    turnRandom();
 
     const positions = 9;
 
-    for(let i = 0; i < positions; i++){
+    for (let i = 0; i < positions; i++) {
         const cell = document.createElement('div');
         cell.classList.add('cell');
-        cellsContainer.appendChild(cell)
+        cellsContainer.appendChild(cell);
     }
 
     cellsContainer.classList.add('cells-container-loaded');
 
-    turns.turnTitle.innerText = isTurn(turns.firstTurn);
+    turnTitle.innerText = isTurn(isTurnX);
 
-    main();
+    playing();
 }
 
-const main = () => {
+const playing = () => {
 
-    if(counterTurns >= maxTurs) return;
 
     const cells = $('.cell', true);
 
-    cells.forEach( cell  => {
-
-        cell.addEventListener('click', e =>{
+    cells.forEach(cell => {
+        cell.addEventListener('click', e => {
+            if (counterTurns >= maxTurs || endGame) return;
             clicksTruns(e.target);
             counterTurns++;
-        }, {once: true})
+        }, { once: true })
 
     });
 }
@@ -55,13 +59,12 @@ const main = () => {
 const clicksTruns = target => {
 
     const cell = target;
-    const cellClass = isTurnCell(isTurnX);
+    const cellClass = classCells(isTurnX);
     cell.dataset.content = isTurn(isTurnX);
-    cell.classList.add(cellClass)
+    cell.classList.add(cellClass);
 
     isTurnX = !isTurnX;
-
-    turns.turnTitle.innerText = isTurn(isTurnX);
+    turnTitle.innerText = isTurn(isTurnX);
 
     checkWinner(cellClass);
 }
@@ -69,28 +72,31 @@ const clicksTruns = target => {
 const checkWinner = cellClass => {
     const cells = $('.cell', true);
 
-    const winner = winningPosition.some( ArrayPosotion => {
-        return ArrayPosotion.every( position =>{
+    const winner = winningPosition.some(ArrayPosotion => {
+        return ArrayPosotion.every(position => {
             return cells[position].classList.contains(cellClass);
         })
     })
 
-    if(winner){
+    if (winner) {
         const ganador = cellClass == 'cross' ? 'x' : 'o';
         messageContainer.classList.add('message-active')
+        messageWinner.innerText = `" ${ganador} "`;
+        endGame = true;
     }
 }
 
 messageContainer.addEventListener('click', e => {
     const target = e.target;
 
-    if(target.dataset.acept){
+    if (target.dataset.acept) {
         messageContainer.classList.remove('message-active');
     }
 
-    if(target.dataset.new){
+    if (target.dataset.new) {
         messageContainer.classList.remove('message-active');
         loadGame();
+        counterTurns = 0;
     }
 })
 loadGame()
