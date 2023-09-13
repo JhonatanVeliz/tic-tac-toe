@@ -6,7 +6,6 @@ const messageContainer = $('.message');
 const messageWinner = $('.winner');
 
 // Utilitis
-const turns = { turnTitle: $('.turn'), firstTurn: turnRandom() }
 let turnTitle = $('.turn-title');
 let isTurnX;
 const maxTurs = 9;
@@ -80,8 +79,17 @@ const checkWinner = cellClass => {
 
     if (winner) {
         const ganador = cellClass == 'cross' ? 'x' : 'o';
-        messageContainer.classList.add('message-active')
-        messageWinner.innerText = `" ${ganador} "`;
+        messageContainer.classList.add('message-active');
+        messageWinner.innerHTML = 
+        `¡ El Jugador <span class="winner__name">" ${ganador} "</span> Ha Ganado !`;
+        endGame = true;
+    }
+
+    if(counterTurns + 1 === maxTurs){
+        const ganador = 'Empate';
+        messageContainer.classList.add('message-active');
+        messageWinner.innerHTML = 
+        `Fin del Juego hubo un <span class="winner__name">" ${ganador} "</span> `;
         endGame = true;
     }
 }

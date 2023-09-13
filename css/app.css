@@ -130,7 +130,7 @@ body{
     text-transform: capitalize;
     text-align: center;
  }
-.winner{
+.winner__name{
     color: var(--color-blue);
 }
 .btn--succes{
